@@ -1,1 +1,591 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>LOCALYC · MAJOR TEAM</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background:
+        radial-gradient(circle at top, #191919 0%, #080808 55%, #050505 100%);
+    color: #fff;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    padding: 30px 15px;
+}
+
+.container {
+    width: 100%;
+    max-width: 560px;
+    margin: auto;
+}
+
+/* HEADER */
+
+.header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.header h1 {
+    font-size: 29px;
+    font-weight: 800;
+    letter-spacing: 5px;
+}
+
+.header p {
+    color: #777;
+    font-size: 11px;
+    letter-spacing: 3px;
+    margin-top: 8px;
+}
+
+/* SLIDER */
+
+.slider-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 28px;
+}
+
+.slider {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 13px;
+    transition: height .3s ease;
+    background: #111;
+}
+
+.slider-track {
+    display: flex;
+    transition: transform .5s ease;
+}
+
+.slide {
+    min-width: 100%;
+    width: 100%;
+}
+
+.slide img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 35px;
+    height: 35px;
+    border: 1px solid #444;
+    border-radius: 50%;
+    background: rgba(0,0,0,.65);
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+}
+
+.dots {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 12px;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    background: #444;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.dot.active {
+    width: 19px;
+    border-radius: 10px;
+    background: #ddd;
+}
+
+/* MUSIC PLAYER */
+
+.music-box {
+    background: #101010;
+    border: 1px solid #252525;
+    border-radius: 13px;
+    padding: 17px;
+    margin-bottom: 30px;
+}
+
+.music-title {
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.music-subtitle {
+    color: #777;
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+.music-controls {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 16px;
+}
+
+.music-controls button {
+    background: #1b1b1b;
+    color: #ddd;
+    border: 1px solid #333;
+    border-radius: 7px;
+    padding: 9px 13px;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.music-controls button:hover {
+    background: #292929;
+}
+
+.progress-area {
+    margin-top: 15px;
+}
+
+.progress-bar {
+    width: 100%;
+    accent-color: #aaa;
+    cursor: pointer;
+}
+
+.time-row {
+    display: flex;
+    justify-content: space-between;
+    color: #777;
+    font-size: 10px;
+    margin-top: 5px;
+}
+
+.volume-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 13px;
+    color: #777;
+    font-size: 10px;
+}
+
+.volume-row input {
+    flex: 1;
+    accent-color: #aaa;
+}
+
+/* SECTION */
+
+.section-title {
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: #aaa;
+    margin-bottom: 16px;
+}
+
+/* MEMBER CARD */
+
+.members {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.member-card {
+    display: block;
+    text-decoration: none;
+    color: white;
+    background: linear-gradient(135deg, #151515, #0d0d0d);
+    border: 1px solid #292929;
+    border-radius: 11px;
+    padding: 17px 16px;
+    transition: .25s ease;
+}
+
+.member-card:hover {
+    background: #191919;
+    border-color: #555;
+    transform: translateY(-2px);
+}
+
+.member-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.member-name {
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: none;
+}
+
+.member-role {
+    font-size: 10px;
+    color: #777;
+    letter-spacing: .5px;
+    white-space: nowrap;
+}
+
+.verified {
+    display: inline-flex;
+    width: 13px;
+    height: 13px;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+
+.verified svg {
+    width: 100%;
+    height: 100%;
+}
+
+.click-text {
+    text-align: center;
+    color: #777;
+    font-size: 10px;
+    letter-spacing: 1px;
+    margin-top: 14px;
+}
+
+/* FOOTER */
+
+.footer {
+    text-align: center;
+    color: #555;
+    font-size: 10px;
+    letter-spacing: 2px;
+    margin-top: 30px;
+    padding-bottom: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header class="header">
+        <h1>ꪶꪮᥴꪖꪶꪗᥴ</h1>
+        <p>𝒪𝒻𝒻𝒾𝒸𝒾𝒶𝓁 𝑀𝑒𝓂𝒷𝑒𝓇𝓈</p>
+    </header>
+
+    <!-- IMAGE SLIDER -->
+
+    <div class="slider-wrapper">
+
+        <div class="slider" id="slider">
+            <div class="slider-track" id="sliderTrack">
+
+                <div class="slide">
+                    <img
+                        src="https://files.catbox.moe/uxa22z.jpg"
+                        alt="LOCALYC Image 1"
+                    >
+                </div>
+
+                <div class="slide">
+                    <img
+                        src="https://files.catbox.moe/r64xg0.jpg"
+                        alt="LOCALYC Image 2"
+                    >
+                </div>
+
+            </div>
+        </div>
+
+        <button class="slider-btn prev" onclick="changeSlide(-1)">‹</button>
+        <button class="slider-btn next" onclick="changeSlide(1)">›</button>
+
+        <div class="dots">
+            <span class="dot active" onclick="showSlide(0)"></span>
+            <span class="dot" onclick="showSlide(1)"></span>
+        </div>
+
+    </div>
+
+    <!-- MUSIC PLAYER -->
+
+    <div class="music-box">
+
+        <div class="music-title">LocalycSolidarity</div>
+        <div class="music-subtitle">Music</div>
+
+        <audio id="audio" preload="metadata" src="anlasana.m4a"></audio>
+
+        <div class="music-controls">
+            <button id="playBtn" onclick="togglePlay()">PLAY</button>
+            <button onclick="stopMusic()">STOP</button>
+        </div>
+
+        <div class="progress-area">
+
+            <input
+                type="range"
+                class="progress-bar"
+                id="progress"
+                value="0"
+                min="0"
+                max="100"
+            >
+
+            <div class="time-row">
+                <span id="currentTime">0:00</span>
+                <span id="duration">0:00</span>
+            </div>
+
+        </div>
+
+        <div class="volume-row">
+            <span>VOLUME</span>
+            <input
+                type="range"
+                id="volume"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0.7"
+            >
+        </div>
+
+    </div>
+
+    <!-- TEAM MEMBERS -->
+
+    <h2 class="section-title">OUR MEMBERS</h2>
+
+    <div class="members" id="members"></div>
+
+    <footer class="footer">
+        LOCALYC © 2026 · ALL RIGHTS RESERVED
+    </footer>
+
+</div>
+
+<script>
+
+/* MEMBER DATA */
+
+const members = [
+    { name: "fiona", username: "terms_all", role: "Founder" },
+    { name: "abyy", username: "vzaabi", role: "Membro" },
+    { name: "fat1uwy", username: "leftmissyou", role: "Membro" },
+    { name: "naeltiji", username: "dewwxxl", role: "Membro" },
+    { name: "valentino", username: "ClicksNom", role: "Membro" },
+    { name: "kevin", username: "infiealreindo", role: "Membro" },
+    { name: "srapp", username: "tgbens", role: "Membro" },
+    { name: "j4eDvn", username: "j4eDvnbns", role: "Membro" },
+    { name: "shions", username: "therealmylifee", role: "Membro" },
+    { name: "alzyy", username: "vvalzyy", role: "Membro" },
+    { name: "denx", username: "DenxFamos2", role: "Membro" },
+    { name: "azhar", username: "hatters10k", role: "Membro" },
+    { name: "denzx", username: "renascirdo", role: "Membro" }
+];
+
+/* VERIFIED BADGE */
+
+const verifiedIcon = `
+<svg class="verified" viewBox="0 0 24 24">
+    <path
+        fill="#3897f0"
+        d="M12 1.5l3 2 3.6-.1 1.2 3.4 2.7 2.4-1 3.5 1 3.5-2.7 2.4-1.2 3.4-3.6-.1-3 2-3-2-3.6.1-1.2-3.4-2.7-2.4 1-3.5-1-3.5 2.7-2.4 1.2-3.4 3.6.1z"
+    />
+    <path
+        d="M7.5 12.2l3 3 6-6"
+        fill="none"
+        stroke="white"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+    />
+</svg>
+`;
+
+/* DISPLAY MEMBERS */
+
+const membersContainer = document.getElementById("members");
+
+membersContainer.innerHTML = members.map(member => `
+    <a
+        class="member-card"
+        href="https://t.me/${member.username}"
+        target="_blank"
+        rel="noopener noreferrer"
+    >
+
+        <div class="member-top">
+
+            <div>
+                <span class="member-name">${member.name}</span>
+                ${verifiedIcon}
+            </div>
+
+            <span class="member-role">| ${member.role}</span>
+
+        </div>
+
+        <div class="click-text">
+            &gt; Click to TG
+        </div>
+
+    </a>
+`).join("");
+
+/* IMAGE SLIDER */
+
+let currentSlide = 0;
+
+const slider = document.getElementById("slider");
+const sliderTrack = document.getElementById("sliderTrack");
+const slides = document.querySelectorAll(".slide");
+const images = document.querySelectorAll(".slide img");
+const dots = document.querySelectorAll(".dot");
+
+function setSliderHeight() {
+    const activeImage = images[currentSlide];
+
+    if (activeImage && activeImage.complete && activeImage.naturalWidth) {
+        const width = slider.clientWidth;
+
+        slider.style.height =
+            (width * activeImage.naturalHeight / activeImage.naturalWidth) + "px";
+    }
+}
+
+function showSlide(index) {
+
+    currentSlide = (index + slides.length) % slides.length;
+
+    sliderTrack.style.transform =
+        `translateX(-${currentSlide * 100}%)`;
+
+    dots.forEach((dot, i) => {
+        dot.classList.toggle("active", i === currentSlide);
+    });
+
+    setSliderHeight();
+}
+
+function changeSlide(direction) {
+    showSlide(currentSlide + direction);
+}
+
+images.forEach(img => {
+    img.addEventListener("load", setSliderHeight);
+});
+
+window.addEventListener("resize", setSliderHeight);
+
+setInterval(() => {
+    changeSlide(1);
+}, 5000);
+
+/* MUSIC PLAYER */
+
+const audio = document.getElementById("audio");
+const playBtn = document.getElementById("playBtn");
+const progress = document.getElementById("progress");
+const volume = document.getElementById("volume");
+
+function togglePlay() {
+
+    if (audio.paused) {
+        audio.play();
+
+        playBtn.textContent = "PAUSE";
+    } else {
+        audio.pause();
+
+        playBtn.textContent = "PLAY";
+    }
+}
+
+function stopMusic() {
+
+    audio.pause();
+    audio.currentTime = 0;
+
+    playBtn.textContent = "PLAY";
+}
+
+audio.addEventListener("timeupdate", () => {
+
+    if (audio.duration) {
+        progress.value =
+            (audio.currentTime / audio.duration) * 100;
+    }
+
+    document.getElementById("currentTime").textContent =
+        formatTime(audio.currentTime);
+
+});
+
+audio.addEventListener("loadedmetadata", () => {
+
+    document.getElementById("duration").textContent =
+        formatTime(audio.duration);
+
+});
+
+audio.addEventListener("ended", () => {
+    playBtn.textContent = "PLAY";
+});
+
+progress.addEventListener("input", () => {
+
+    if (audio.duration) {
+        audio.currentTime =
+            (progress.value / 100) * audio.duration;
+    }
+
+});
+
+volume.addEventListener("input", () => {
+    audio.volume = volume.value;
+});
+
+audio.volume = 0.7;
+
+function formatTime(seconds) {
+
+    if (!Number.isFinite(seconds)) return "0:00";
+
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+
+    return minutes + ":" +
+        String(remainingSeconds).padStart(2, "0");
+}
+
+</script>
+
+</body>
+</html>
