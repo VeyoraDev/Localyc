@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>LOCALYC · MAJOR TEAM</title>
 
 <style>
@@ -14,8 +13,7 @@
 }
 
 body {
-    background:
-        radial-gradient(circle at top, #191919 0%, #080808 55%, #050505 100%);
+    background: radial-gradient(circle at top, #191919 0%, #080808 55%, #050505 100%);
     color: #fff;
     font-family: Arial, sans-serif;
     min-height: 100vh;
@@ -68,6 +66,7 @@ body {
 
 .slider-track {
     display: flex;
+    width: 100%;
     transition: transform .45s ease;
     will-change: transform;
 }
@@ -75,7 +74,7 @@ body {
 .slide {
     flex: 0 0 100%;
     width: 100%;
-    min-width: 0;
+    min-width: 100%;
 }
 
 .slide img {
@@ -192,7 +191,7 @@ body {
     margin-top: 5px;
 }
 
-/* SECTION */
+/* MEMBERS */
 
 .section-title {
     text-align: center;
@@ -201,8 +200,6 @@ body {
     color: #aaa;
     margin-bottom: 16px;
 }
-
-/* MEMBER CARD */
 
 .members {
     display: flex;
@@ -237,7 +234,6 @@ body {
 .member-name {
     font-size: 14px;
     font-weight: bold;
-    text-transform: none;
 }
 
 .member-role {
@@ -299,17 +295,11 @@ body {
             <div class="slider-track" id="sliderTrack">
 
                 <div class="slide">
-                    <img
-                        src="https://files.catbox.moe/uxa22z.jpg"
-                        alt="LOCALYC Image 1"
-                    >
+                    <img src="https://files.catbox.moe/uxa22z.jpg" alt="LOCALYC Image 1">
                 </div>
 
                 <div class="slide">
-                    <img
-                        src="https://files.catbox.moe/r64xg0.jpg"
-                        alt="LOCALYC Image 2"
-                    >
+                    <img src="https://files.catbox.moe/r64xg0.jpg" alt="LOCALYC Image 2">
                 </div>
 
             </div>
@@ -333,12 +323,7 @@ body {
         <div class="music-title">LocalycSolidarity</div>
         <div class="music-subtitle">Music</div>
 
-        <audio
-            id="audio"
-            autoplay
-            preload="auto"
-            src="anlasana.m4a">
-        </audio>
+        <audio id="audio" autoplay preload="auto" src="anlasana.m4a"></audio>
 
         <div class="music-controls">
             <button id="playBtn" onclick="togglePlay()">PLAY</button>
@@ -364,7 +349,7 @@ body {
 
     </div>
 
-    <!-- TEAM MEMBERS -->
+    <!-- MEMBERS -->
 
     <h2 class="section-title">OUR MEMBERS</h2>
 
@@ -426,7 +411,6 @@ membersContainer.innerHTML = members.map(member => `
         target="_blank"
         rel="noopener noreferrer"
     >
-
         <div class="member-top">
 
             <div>
@@ -476,28 +460,28 @@ function setSliderHeight() {
         slider.style.height =
             (width * activeImage.naturalHeight /
             activeImage.naturalWidth) + "px";
-
     }
 }
 
 function updateSlider(offset = 0, animate = true) {
 
+    const slideWidth = slider.clientWidth;
+
     sliderTrack.style.transition = animate
         ? "transform .45s ease"
         : "none";
 
-    const percentage = currentSlide * (100 / totalSlides);
+    const position =
+        -(currentSlide * slideWidth) + offset;
 
     sliderTrack.style.transform =
-        `translateX(calc(-${percentage}% + ${offset}px))`;
+        `translate3d(${position}px, 0, 0)`;
 
     dots.forEach((dot, index) => {
-
         dot.classList.toggle(
             "active",
             index === currentSlide
         );
-
     });
 
     setSliderHeight();
@@ -523,11 +507,8 @@ function startAutoSlide() {
     clearInterval(autoSlide);
 
     autoSlide = setInterval(() => {
-
         showSlide(currentSlide + 1);
-
     }, 5000);
-
 }
 
 function restartAutoSlide() {
@@ -549,7 +530,6 @@ slider.addEventListener("pointerdown", (event) => {
     sliderTrack.style.transition = "none";
 
     slider.setPointerCapture(event.pointerId);
-
 });
 
 slider.addEventListener("pointermove", (event) => {
@@ -561,7 +541,6 @@ slider.addEventListener("pointermove", (event) => {
     const difference = currentX - startX;
 
     updateSlider(difference, false);
-
 });
 
 function finishSwipe() {
@@ -572,9 +551,9 @@ function finishSwipe() {
 
     const difference = currentX - startX;
 
-    if (difference < -40) {
+    if (difference < -50) {
         currentSlide++;
-    } else if (difference > 40) {
+    } else if (difference > 50) {
         currentSlide--;
     }
 
@@ -583,7 +562,6 @@ function finishSwipe() {
 
     updateSlider();
     restartAutoSlide();
-
 }
 
 slider.addEventListener("pointerup", finishSwipe);
@@ -592,12 +570,12 @@ slider.addEventListener("pointercancel", finishSwipe);
 /* IMAGE LOADING */
 
 images.forEach(img => {
-
     img.addEventListener("load", setSliderHeight);
-
 });
 
-window.addEventListener("resize", setSliderHeight);
+window.addEventListener("resize", () => {
+    updateSlider(0, false);
+});
 
 /* INITIALIZE SLIDER */
 
@@ -625,7 +603,6 @@ function togglePlay() {
         audio.pause();
 
     }
-
 }
 
 audio.addEventListener("play", () => {
@@ -639,10 +616,8 @@ audio.addEventListener("pause", () => {
 audio.addEventListener("timeupdate", () => {
 
     if (audio.duration) {
-
         progress.value =
             (audio.currentTime / audio.duration) * 100;
-
     }
 
     document.getElementById("currentTime").textContent =
@@ -666,15 +641,13 @@ audio.addEventListener("ended", () => {
 progress.addEventListener("input", () => {
 
     if (audio.duration) {
-
         audio.currentTime =
             (progress.value / 100) * audio.duration;
-
     }
 
 });
 
-/* AUTOPLAY + MAX VOLUME */
+/* AUTOPLAY */
 
 audio.volume = 1;
 
@@ -699,7 +672,6 @@ function formatTime(seconds) {
 
     return minutes + ":" +
         String(remainingSeconds).padStart(2, "0");
-
 }
 
 </script>
