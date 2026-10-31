@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>LOCALYC</title>
+<title>LOCALYC · MAJOR TEAM</title>
 
 <style>
 * {
@@ -60,18 +60,22 @@ body {
     width: 100%;
     overflow: hidden;
     border-radius: 13px;
-    transition: height .3s ease;
     background: #111;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .slider-track {
     display: flex;
-    transition: transform .5s ease;
+    transition: transform .45s ease;
+    will-change: transform;
 }
 
 .slide {
     flex: 0 0 100%;
     width: 100%;
+    min-width: 0;
 }
 
 .slide img {
@@ -79,6 +83,8 @@ body {
     width: 100%;
     height: auto;
     object-fit: contain;
+    pointer-events: none;
+    -webkit-user-drag: none;
 }
 
 .slider-btn {
@@ -289,6 +295,7 @@ body {
     <div class="slider-wrapper">
 
         <div class="slider" id="slider">
+
             <div class="slider-track" id="sliderTrack">
 
                 <div class="slide">
@@ -306,6 +313,7 @@ body {
                 </div>
 
             </div>
+
         </div>
 
         <button class="slider-btn prev" onclick="changeSlide(-1)">‹</button>
@@ -440,6 +448,10 @@ membersContainer.innerHTML = members.map(member => `
 /* IMAGE SLIDER */
 
 let currentSlide = 0;
+let startX = 0;
+let currentX = 0;
+let isDragging = false;
+let autoSlide = null;
 
 const slider = document.getElementById("slider");
 const sliderTrack = document.getElementById("sliderTrack");
@@ -447,44 +459,150 @@ const slides = document.querySelectorAll(".slide");
 const images = document.querySelectorAll(".slide img");
 const dots = document.querySelectorAll(".dot");
 
+const totalSlides = slides.length;
+
 function setSliderHeight() {
+
     const activeImage = images[currentSlide];
 
-    if (activeImage && activeImage.complete && activeImage.naturalWidth) {
+    if (
+        activeImage &&
+        activeImage.complete &&
+        activeImage.naturalWidth
+    ) {
+
         const width = slider.clientWidth;
 
         slider.style.height =
-            (width * activeImage.naturalHeight / activeImage.naturalWidth) + "px";
+            (width * activeImage.naturalHeight /
+            activeImage.naturalWidth) + "px";
+
     }
+}
+
+function updateSlider(offset = 0, animate = true) {
+
+    sliderTrack.style.transition = animate
+        ? "transform .45s ease"
+        : "none";
+
+    const percentage = currentSlide * (100 / totalSlides);
+
+    sliderTrack.style.transform =
+        `translateX(calc(-${percentage}% + ${offset}px))`;
+
+    dots.forEach((dot, index) => {
+
+        dot.classList.toggle(
+            "active",
+            index === currentSlide
+        );
+
+    });
+
+    setSliderHeight();
 }
 
 function showSlide(index) {
 
-    currentSlide = (index + slides.length) % slides.length;
+    currentSlide =
+        (index + totalSlides) % totalSlides;
 
-    sliderTrack.style.transform =
-        `translateX(-${currentSlide * 50}%)`;
-
-    dots.forEach((dot, i) => {
-        dot.classList.toggle("active", i === currentSlide);
-    });
-
-    setSliderHeight();
+    updateSlider();
+    restartAutoSlide();
 }
 
 function changeSlide(direction) {
     showSlide(currentSlide + direction);
 }
 
+/* AUTO SLIDE */
+
+function startAutoSlide() {
+
+    clearInterval(autoSlide);
+
+    autoSlide = setInterval(() => {
+
+        showSlide(currentSlide + 1);
+
+    }, 5000);
+
+}
+
+function restartAutoSlide() {
+    startAutoSlide();
+}
+
+/* MANUAL SWIPE */
+
+slider.addEventListener("pointerdown", (event) => {
+
+    if (event.pointerType === "mouse" && event.button !== 0) {
+        return;
+    }
+
+    startX = event.clientX;
+    currentX = startX;
+    isDragging = true;
+
+    sliderTrack.style.transition = "none";
+
+    slider.setPointerCapture(event.pointerId);
+
+});
+
+slider.addEventListener("pointermove", (event) => {
+
+    if (!isDragging) return;
+
+    currentX = event.clientX;
+
+    const difference = currentX - startX;
+
+    updateSlider(difference, false);
+
+});
+
+function finishSwipe() {
+
+    if (!isDragging) return;
+
+    isDragging = false;
+
+    const difference = currentX - startX;
+
+    if (difference < -40) {
+        currentSlide++;
+    } else if (difference > 40) {
+        currentSlide--;
+    }
+
+    currentSlide =
+        (currentSlide + totalSlides) % totalSlides;
+
+    updateSlider();
+    restartAutoSlide();
+
+}
+
+slider.addEventListener("pointerup", finishSwipe);
+slider.addEventListener("pointercancel", finishSwipe);
+
+/* IMAGE LOADING */
+
 images.forEach(img => {
+
     img.addEventListener("load", setSliderHeight);
+
 });
 
 window.addEventListener("resize", setSliderHeight);
 
-setInterval(() => {
-    changeSlide(1);
-}, 5000);
+/* INITIALIZE SLIDER */
+
+updateSlider();
+startAutoSlide();
 
 /* MUSIC PLAYER */
 
@@ -497,12 +615,17 @@ audio.volume = 1;
 function togglePlay() {
 
     if (audio.paused) {
+
         audio.play().catch(() => {
             playBtn.textContent = "PLAY";
         });
+
     } else {
+
         audio.pause();
+
     }
+
 }
 
 audio.addEventListener("play", () => {
@@ -516,8 +639,10 @@ audio.addEventListener("pause", () => {
 audio.addEventListener("timeupdate", () => {
 
     if (audio.duration) {
+
         progress.value =
             (audio.currentTime / audio.duration) * 100;
+
     }
 
     document.getElementById("currentTime").textContent =
@@ -541,8 +666,10 @@ audio.addEventListener("ended", () => {
 progress.addEventListener("input", () => {
 
     if (audio.duration) {
+
         audio.currentTime =
             (progress.value / 100) * audio.duration;
+
     }
 
 });
@@ -572,6 +699,7 @@ function formatTime(seconds) {
 
     return minutes + ":" +
         String(remainingSeconds).padStart(2, "0");
+
 }
 
 </script>
